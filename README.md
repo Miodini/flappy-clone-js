@@ -13,8 +13,3 @@
 - Background decorations(clouds?)
 - Changing some hardcoded settings to variables
 - Increasing game speed
-
-### Technologies Used
-- HTML5
-- CSS3
-- ES6
