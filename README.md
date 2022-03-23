@@ -8,7 +8,6 @@
 <p>Press and hold any key to start the game. Holding a key will make the bird go up, releasing it will make the bird go down. Avoid the pipes and try to get the highest score!</p>
 
 ### Planned Improvments
-- An actual restart button
 - More consistent hitbox
 - Background decorations(clouds?)
 - Changing some hardcoded settings to variables

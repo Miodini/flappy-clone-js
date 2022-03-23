@@ -14,7 +14,6 @@ class Score {
         this.element.innerText = '0'
 
         gameDiv.appendChild(this.element)
-
     }
     /**
      * Aumenta o ponto em 1.
@@ -24,6 +23,9 @@ class Score {
         let ponto = parseInt(this.element.innerText)
         this.element.innerText = ++ponto
         return ponto
+    }
+    restart(){
+        this.element.innerText = '0'
     }
 }
 
@@ -155,7 +157,7 @@ class Passarinho {
         img.setAttribute('src', '../img/bird.png')
         this.element.appendChild(img)
         this.gameDiv.appendChild(this.element)
-
+        
         window.onkeydown = () => this.voando = true
         window.onkeyup = () => this.voando = false
     }
@@ -190,12 +192,14 @@ class Passarinho {
     }
 }
 
+
 class Game {
     /**
      * Main class for running the game
      * @param {Number} spaceBetweenPipes - Vertical distance between pipes (px)
     */
     constructor(spaceBetweenPipes) {
+        this.spaceBetweenPipes = spaceBetweenPipes
         this.pontos = new Score()
         this.passarinho = new Passarinho(3, 2)
         this.canos = [
@@ -204,12 +208,11 @@ class Game {
             new ParDeCanos(250, 1, this.pontos, this.passarinho),
             new ParDeCanos(250, 1, this.pontos, this.passarinho)
         ]
+        this.gameRect = document.querySelector('.jogo').getBoundingClientRect()
         
-        const gameRect = document.querySelector('.jogo').getBoundingClientRect()
-        this.canos[0].setPipePos(gameRect.width)
-        this.canos[1].setPipePos(gameRect.width + spaceBetweenPipes)
-        this.canos[2].setPipePos(gameRect.width + 2 * spaceBetweenPipes)
-        this.canos[3].setPipePos(gameRect.width + 3 * spaceBetweenPipes)
+        this.canos.forEach((ele, ind) => {
+            ele.setPipePos(this.gameRect.width + (ind * this.spaceBetweenPipes))
+        })
         //Setups iniciais
         const startText = document.querySelector('.start')
         document.querySelector('.jogo').removeChild(startText)
@@ -220,26 +223,32 @@ class Game {
      * Starts the game loop
     */
     start(){ 
-        const timer = setInterval(() => {
+        this.timer = setInterval(() => {
             this.passarinho.animate()
             this.canos.forEach(e => {
                 // Game over
                 if(e.movePipe()){
-                    clearInterval(timer)
+                    clearInterval(this.timer)
                     const gameOver = document.createElement('div')
                     gameOver.classList = 'gameover'
-                    gameOver.innerHTML = '<h2>Game Over!</h2>' + '\n' + '<span>Refresh page to restart</span>'
+                    gameOver.innerHTML = '<h2>Game Over!</h2><span>Press the button on top right corner to restart.</span>'
                     document.querySelector('.jogo').appendChild(gameOver)
                 }
-            })
-            
-        },
-        5)
+            })            
+        }, 5)
     }
 }
-// Waits for input
-const startGame = function(){
-    var jogo = new Game(350)
-    jogo.start()
+let game
+function startGame(){
+    game = new Game(350)
+    game.start()
 }
+function restartGame(){
+    clearInterval(game.timer)
+    document.querySelector('.jogo').innerHTML = '<div class="start">Hold any key to start flying.</div>'
+    window.onkeyup = null
+    window.onkeydown = startGame
+}
+// Listeners
 window.onkeydown = startGame
+document.querySelector('.restart').onclick = restartGame
