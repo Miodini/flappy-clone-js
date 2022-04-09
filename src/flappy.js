@@ -8,7 +8,7 @@ class Score {
      *Contador de pontos.
     */
     constructor() {
-        const gameDiv = document.querySelector('.jogo')
+        const gameDiv = document.querySelector('.screen')
         this.element = document.createElement('div')
         this.element.className = 'pontos'
         this.element.innerText = '0'
@@ -70,19 +70,19 @@ class Cano {
 class ParDeCanos {
     /**
      * Div que contém um par de canos
-     * @param {Number} openingSize - Valor em pixel do tamanho da abertura do cano (distância entre os canos)
-     * @param {Number} deslocamento - Valor em pixel que define quantidade de movimento por deslocamento
+     * @param {Number} yPipeDist - Valor em pixel do tamanho da abertura do cano (distância entre os canos)
+     * @param {Number} xSpeed - Valor em pixel que define quantidade de movimento por frame
      * @param {Score} scoreObj - Objeto do placar
      * @param {Passarinho} passaroObj - Objeto do passarinho
     */
-    constructor(openingSize, deslocamento, scoreObj, passaroObj) {
-        this.openingSize = openingSize
-        this.deslocamento = deslocamento
+    constructor(yPipeDist, xSpeed, scoreObj, passaroObj) {
+        this.yPipeDist = yPipeDist
+        this.xSpeed = xSpeed
         this.scoreObj = scoreObj
         this.passaroObj = passaroObj
         this.canoTop = new Cano(true)
         this.canoBot = new Cano(false)
-        this.gameDiv = document.querySelector('.jogo')
+        this.gameDiv = document.querySelector('.screen')
 
         this.element = document.createElement('div')
         this.element.className = 'parCanos'
@@ -103,9 +103,9 @@ class ParDeCanos {
     */
     changeHeights(){
         const alturaJogo = this.gameDiv.getBoundingClientRect().height
-        const newHeight = Math.random() * (alturaJogo - this.openingSize - 30) //30px = tamanho da boca
+        const newHeight = Math.random() * (alturaJogo - this.yPipeDist - 30) //30px = tamanho da boca
         this.canoTop.setHeight(newHeight) 
-        this.canoBot.setHeight(alturaJogo - newHeight - this.openingSize)
+        this.canoBot.setHeight(alturaJogo - newHeight - this.yPipeDist)
         return newHeight
     }
     /**
@@ -116,7 +116,7 @@ class ParDeCanos {
         const xAtual = getPixel(this.element, 'left')
         const gameWidth = this.gameDiv.getBoundingClientRect().width
         const gameHeight = this.gameDiv.getBoundingClientRect().height
-        let newX = xAtual - this.deslocamento
+        let newX = xAtual - this.xSpeed
         // Checagem de rollover
         if (newX < -120) { //120 = largura máxima do cano
             newX = gameWidth + 500 // Alterar para um valor lógico dps  
@@ -141,14 +141,14 @@ class ParDeCanos {
 class Passarinho {
     /**
      * Define o passarinho (personagem controlável)
-     * @param {Number} upSpeed - Deslocamento em pixels por subida
-     * @param {Number} downSpeed - Deslocamento em pixels por descida
+     * @param {Number} upSpeed - Upwards pixel displacement per frame
+     * @param {Number} downSpeed - Downwards pixel displacement per frame
     */
     constructor(upSpeed, downSpeed) {
         this.upSpeed = upSpeed
         this.downSpeed = downSpeed
         this.element = document.createElement('div')
-        this.gameDiv = document.querySelector('.jogo')
+        this.gameDiv = document.querySelector('.screen')
         this.voando = true
         
         const img = document.createElement('img')
@@ -192,30 +192,44 @@ class Passarinho {
     }
 }
 
-
 class Game {
     /**
      * Main class for running the game
-     * @param {Number} spaceBetweenPipes - Vertical distance between pipes (px)
+     * @param {Object} [settings] - Contains some settings of the game
+     * @param {Number} [settings.upSpeed] - Upwards pixel displacement per frame
+     * @param {Number} [settings.downSpeed] - Downwards pixel displacement per frame
+     * @param {Number} [settings.xSpeed] - Horizontal pixel displacement per frame
+     * @param {Number} [settings.xPipeDist] - Amount of pixel between 2 consecutives pipes (horizontal)
+     * @param {Number} [settings.yPipeDist] - Amount of pixel between 2 column of pipes (vertical) 
     */
-    constructor(spaceBetweenPipes) {
-        this.spaceBetweenPipes = spaceBetweenPipes
-        this.pontos = new Score()
-        this.passarinho = new Passarinho(3, 2)
-        this.canos = [
-            new ParDeCanos(250, 1, this.pontos, this.passarinho),
-            new ParDeCanos(250, 1, this.pontos, this.passarinho),
-            new ParDeCanos(250, 1, this.pontos, this.passarinho),
-            new ParDeCanos(250, 1, this.pontos, this.passarinho)
-        ]
-        this.gameRect = document.querySelector('.jogo').getBoundingClientRect()
+    constructor(settings) {
+        // Sets unset settings
+        this.settings = settings || {}
+        this.settings.upSpeed ||= 3
+        this.settings.downSpeed ||= 2
+        this.settings.xSpeed ||= 1
+        this.settings.xPipeDist ||= 350
+        this.settings.yPipeDist ||= 250
         
-        this.canos.forEach((ele, ind) => {
-            ele.setPipePos(this.gameRect.width + (ind * this.spaceBetweenPipes))
+        this.pontos = new Score()
+        this.passarinho = new Passarinho(this.settings.upSpeed, this.settings.downSpeed)
+        /* TODO : 
+            The amount of pipes created should depend on their speed and distance between them 
+        */
+        this.canos = [
+            new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),
+            new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),
+            new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),
+            new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),
+        ]
+        this.gameRect = document.querySelector('.screen').getBoundingClientRect()
+        
+        this.canos.forEach((ele, index) => {
+            ele.setPipePos(this.gameRect.width + (index * this.settings.xPipeDist))
         })
         //Setups iniciais
         const startText = document.querySelector('.start')
-        document.querySelector('.jogo').removeChild(startText)
+        document.querySelector('.screen').removeChild(startText)
         this.canos.forEach(e => e.changeHeights())
         this.passarinho.recenter()
     }
@@ -232,23 +246,32 @@ class Game {
                     const gameOver = document.createElement('div')
                     gameOver.classList = 'gameover'
                     gameOver.innerHTML = '<h2>Game Over!</h2><span>Press the button on top right corner to restart.</span>'
-                    document.querySelector('.jogo').appendChild(gameOver)
+                    document.querySelector('.screen').appendChild(gameOver)
                 }
             })            
         }, 5)
     }
 }
 let game
+/* Add attributes to this settings variable to adjust the game's settings
+ * They're described above the Game class constructor
+ * Click the restart button to apply the changes
+*/
+let settings = {}
 function startGame(){
-    game = new Game(350)
+    game = new Game(settings)
     game.start()
 }
 function restartGame(){
     clearInterval(game.timer)
-    document.querySelector('.jogo').innerHTML = '<div class="start">Hold any key to start flying.</div>'
+    document.querySelector('.screen').innerHTML = '<div class="start">Hold any key to start flying.</div>'
     window.onkeyup = null
     window.onkeydown = startGame
 }
+function showSettings(){
+    alert("Work in Progress! For the time being, you can change games settings via console (if you're a pro-grammer).")
+}
 // Listeners
 window.onkeydown = startGame
-document.querySelector('.restart').onclick = restartGame
+document.querySelector('#restart').onclick = restartGame
+document.querySelector('#settings').onclick = showSettings

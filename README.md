@@ -7,8 +7,12 @@
 ### How to Play
 <p>Press and hold any key to start the game. Holding a key will make the bird go up, releasing it will make the bird go down. Avoid the pipes and try to get the highest score!</p>
 
+### Known Bugs
+- Modifying the xPipeDist makes some pipes appear either too close or too far from the previous one
+- Pipes won't leave the screen properly when setting decimal values to xSpeed
+
 ### Planned Improvments
 - More consistent hitbox
+- Working settings button (settings can only be changed via code right now)
 - Background decorations(clouds?)
-- Changing some hardcoded settings to variables
 - Increasing game speed
