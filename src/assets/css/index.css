@@ -4,11 +4,6 @@
     src: url("../fonts/PublicPixel.ttf");
 }
 
-*{
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
 body{
     margin: 0;
     background-color: #0D262D;
@@ -19,6 +14,9 @@ body{
     flex-direction: column;
     align-items: center;
     min-height: 100%;
+}
+canvas{
+    border: dodgerblue 4px solid;
 }
 .game{
     display: flex;
@@ -63,15 +61,6 @@ body{
 }
 .gameover span{
     font-size: 24pt;
-}
-
-.passaro{
-    position: absolute;
-    left: calc(50% - 30px);
-}
-.passaro img{
-    width: 60px;
-    height: 50px;
 }
 .parCanos{
     position: absolute;
