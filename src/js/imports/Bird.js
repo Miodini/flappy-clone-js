@@ -5,27 +5,27 @@ export default class Bird{
      * Define o passarinho (personagem controlável)
      * @param {Number} yThrust - Ammount of vertical velocity earned with each flap
     */
-    constructor(yThrust){
+    constructor(canvasCenterX, canvasCenterY, yThrust){
         this.yThrust = -yThrust // Y axis is reversed on canvas
         this.yVelocity = 0
         this.loaded = false // Stays false until the image file is fully loaded
         this.img = new Image()
         this.img.src = birdImg
-        this.img.onload = () => this.loaded = true
-    }
-    config(canvasCenterX, canvasCenterY){
-        const imgScaling = 5; // May be changed for different rendering sizes of the bird
-        const width = this.img.width * imgScaling
-        const height = this.img.height * imgScaling
-        /* --- Another set of attributes --- */
-        this.pos = {
-            x: canvasCenterX  - (width /2),
-            y: canvasCenterY - (height /2)
+        this.img.onload = () => {
+            const imgScaling = 5; // May be changed for different rendering sizes of the bird
+            const width = this.img.width * imgScaling
+            const height = this.img.height * imgScaling
+            /* --- Another set of attributes --- */
+            this.pos = {
+                x: canvasCenterX/2  - (width/2),
+                y: canvasCenterY - (height/2)
+            }
+            this.width = width
+            this.height = height
+            this.loaded = true
         }
-        this.width = width
-        this.height = height
-        /* --------------------------------- */
     }
+
     flap(){
         const maxVelocity = 3*this.yThrust
         this.yVelocity += this.yThrust

@@ -1,22 +1,17 @@
 import Bird from './Bird'
 
 export default class Canvas{
-    constructor(gravity = -50){
-        /* --- Atributes --- */
+    constructor(height, gravity = -50){
         this.gravity = -gravity // Y axis is reversed on canvas
         this.element = document.createElement('canvas')
         this.ctx = this.element.getContext('2d')
-        this.bird = new Bird(100)
-        /* ----------------- */
         
-        const rootDiv = document.querySelector('#screen')
-        const h1Height = document.querySelector('h1').getBoundingClientRect().height
-        // idk why but you need to subtract 56 for the canvas to fit exactly in the page
-        const canvasHeight = window.innerHeight - h1Height - 56 
-        this.element.height = canvasHeight
-        this.element.width = canvasHeight*4/3 // 4:3 proportion
+        this.element.height = height
+        this.element.width = height*4/3 // 4:3 proportion
+        this.bird = new Bird(this.element.width/2, this.element.height/2, 100)
         this.ctx.imageSmoothingEnabled = false
-        rootDiv.appendChild(this.element)
+        
+        document.getElementById('screen').appendChild(this.element)
         addEventListener('keydown', () => this.bird.flap()) 
         this.__debugIndex__ = 0
     }
@@ -28,7 +23,6 @@ export default class Canvas{
         const timer = setInterval(() => {
             if(this.bird.loaded === true){
                 clearInterval(timer)
-                this.bird.config((this.element.width/2), (this.element.height/2))
                 callback()
             }
         }, 1)
