@@ -1,4 +1,4 @@
-import Canvas from './imports/Canvas'
+import Canvas from './classes/Canvas'
 import '../assets/css/index.css'
 
 function animate(){
@@ -7,4 +7,4 @@ function animate(){
 }
 
 const canvas = new Canvas(750)
-canvas.onload = animate
+canvas.load().then(() => animate())

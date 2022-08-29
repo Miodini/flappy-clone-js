@@ -21,8 +21,7 @@ export default class Pipes {
                 y: 0
             }
         }
-        this.pipes.top.img.src = pipeDownImg
-        this.pipes.bottom.img.src = pipeUpImg
+        
         // Waits for all assets to be loaded
         let imgTopIsLoaded = false, imgBottomIsLoaded = false
         this.pipes.top.img.onload = () => imgTopIsLoaded = true
@@ -36,6 +35,37 @@ export default class Pipes {
     }
    
     /**
+     * Loads the image files from source.
+     * @returns {Promise} - Resolves on load finish. Rejects on error.
+     */
+    async loadImg(){
+        const loadTop = () => {
+            this.pipes.top.img.src = pipeDownImg
+            return new Promise((resolve, reject) => {
+                this.pipes.top.img.onload = () => resolve()
+                this.pipes.top.img.onerror = () => reject()
+            })
+        }
+        const loadBottom = () => {
+            this.pipes.bottom.img.src = pipeUpImg
+            return new Promise((resolve, reject) => {
+                this.pipes.bottom.img.onload = () => resolve()
+                this.pipes.bottom.img.onerror = () => reject()
+            })
+        }
+        let error = null
+        try{
+            await loadTop()
+            await loadBottom()
+        }
+        catch(e){ error = e }
+        return new Promise((resolve, reject) => {
+            if(error === null) resolve()
+            else reject(error)
+        })
+    }
+
+    /**
      * Randomly sets a new vertical position for the pipes
      * @param {Number} canvasHeight - Canvas height
     */
@@ -44,15 +74,17 @@ export default class Pipes {
         this.pipes.top.y = rand*(-canvasHeight + this.gapSize) - this.gapSize
         this.pipes.bottom.y = (1 - rand)*(canvasHeight - this.gapSize) + this.gapSize
     }
+
     /**
      * Moves the pipes'xSpeed' units left
-     * 
+     * @param {Number} canvasHeight - Canvas height
+     * @param {Number} canvasWidth - Canvas width
     */
-    movePipe(canvasHeight, canvasWidth){
+    movePipe(canvasHeight, pipesDist, nOfPipes){
         this.x -= this.xSpeed
         // Rollover check
         if(this.x <= 0 - this.width){
-            this.x = canvasWidth    // PROVISÓRIO
+            this.x = pipesDist + nOfPipes*this.width
             this.setY(canvasHeight)
         }
 
