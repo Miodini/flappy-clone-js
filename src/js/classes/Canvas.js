@@ -51,6 +51,19 @@ export default class Canvas{
         })
     }
 
+    /**
+     * Checks if the bird collided with one of the pipes
+     * @returns {Boolean} - true if the bird collided, false otherwise
+     */
+    collisionCheck(){
+        for(let pair of this.pipesPairs){
+            if((this.bird.y < pair.pipes.top.yBottom || this.bird.y + this.bird.height > pair.pipes.bottom.y) && // y axis
+                (this.bird.x + this.bird.width >= pair.x && this.bird.x <= pair.x + pair.width)) // x axis
+                    return true
+        }
+        return false
+    }
+
     draw(){
         const time = .06
         // Background
@@ -58,27 +71,27 @@ export default class Canvas{
         this.ctx.fillRect(0, 0, this.element.width, this.element.height)
         // Bird position update
         this.bird.yVelocity += this.gravity * time
-        this.bird.pos.y += (this.bird.yVelocity * time) + (this.gravity * time^2 / 2)
+        this.bird.y += (this.bird.yVelocity * time) + (this.gravity * time^2 / 2)
         // Screen collision detection
-        if(this.bird.pos.y > this.element.height - this.bird.height){
-            this.bird.pos.y = this.element.height - this.bird.height
+        if(this.bird.y > this.element.height - this.bird.height){
+            this.bird.y = this.element.height - this.bird.height
             this.bird.yVelocity = 0
         }
-        else if(this.bird.pos.y < 0){
-            this.bird.pos.y = 0
+        else if(this.bird.y < 0){
+            this.bird.y = 0
             this.bird.yVelocity = 0
         }
-        this.pipesPairs.forEach((pair) => pair.movePipe(this.element.height, pipesDist, this.pipesPairs.length))
+        this.pipesPairs.forEach(pair => pair.movePipe(this.element.height, pipesDist, this.pipesPairs.length))
         // Draws bird
         this.ctx.drawImage(
             this.bird.img, 
-            this.bird.pos.x,
-            this.bird.pos.y,
+            this.bird.x,
+            this.bird.y,
             this.bird.width,
             this.bird.height
         )
         // Draws pipes
-        this.pipesPairs.forEach((pair) => {
+        this.pipesPairs.forEach(pair => {
             this.ctx.drawImage(
                 pair.pipes.top.img,
                 pair.x,
@@ -94,5 +107,10 @@ export default class Canvas{
                 pair.height
             )
         })
+        if(this.collisionCheck()){
+            console.log('bateu')
+            return false
+        }
+        return true
     }
 }

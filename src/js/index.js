@@ -2,8 +2,8 @@ import Canvas from './classes/Canvas'
 import '../assets/css/index.css'
 
 function animate(){
-    canvas.draw()
-    requestAnimationFrame(animate)
+    if(canvas.draw())
+        requestAnimationFrame(animate)
 }
 
 const canvas = new Canvas(750)

@@ -2,41 +2,29 @@ import pipeUpImg from '../../assets/img/pipe_up.png'
 import pipeDownImg from '../../assets/img/pipe_down.png'
 
 export default class Pipes {
-    constructor(initialX, gapSize, xSpeed, width, height/*scoreObj, passaroObj*/) {
-        this.isloaded = false   // Remains false until the image files get loaded
+    constructor(initialX, gapSize, xSpeed, width, height) {
         this.gapSize = gapSize
         this.xSpeed = xSpeed
         this.width = width
         this.height = height
-        //this.scoreObj = scoreObj
-        //this.passaroObj = passaroObj
         this.x = initialX   // x coordinate
         this.pipes = {
             top: {
                 img: new Image(),
-                y: 0
+                y: 0,
+                get yBottom(){return height + this.y}   // y coordinate of the lower edge
             },
             bottom: {
                 img: new Image(),
                 y: 0
             }
         }
-        
-        // Waits for all assets to be loaded
-        let imgTopIsLoaded = false, imgBottomIsLoaded = false
-        this.pipes.top.img.onload = () => imgTopIsLoaded = true
-        this.pipes.bottom.img.onload = () => imgBottomIsLoaded = true
-        const timer = setInterval(() => {
-            if(imgTopIsLoaded && imgBottomIsLoaded){
-                clearInterval(timer)
-                this.isloaded = true
-            }
-        }, 1)
+ 
     }
-   
+
     /**
      * Loads the image files from source.
-     * @returns {Promise} - Resolves on load finish. Rejects on error.
+     * @returns {Promise} Resolves on load finish. Rejects on error.
      */
     async loadImg(){
         const loadTop = () => {
@@ -79,26 +67,19 @@ export default class Pipes {
      * Moves the pipes'xSpeed' units left
      * @param {Number} canvasHeight - Canvas height
      * @param {Number} canvasWidth - Canvas width
+     * @param {Number} nOfPairs - Number of pairs of pipes rendered in the canvas
     */
-    movePipe(canvasHeight, pipesDist, nOfPipes){
+    movePipe(canvasHeight, pipesDist, nOfPairs){
         this.x -= this.xSpeed
         // Rollover check
         if(this.x <= 0 - this.width){
-            this.x = pipesDist + nOfPipes*this.width
+            this.x = pipesDist + nOfPairs*this.width
             this.setY(canvasHeight)
         }
 
         // // Checagem para atualização do placar
         // if (xAtual > (gameWidth / 2) - 30 && newX <= (gameWidth / 2) - 30) //(gameWidth/2)-30 = posicao horizontal do passarinho
         //     this.scoreObj.incScore() 
-        // Checagem de colisão
-        // const alturaTop = this.canoTop.getHeight() + 30 // altura da boca = 30 pixels
-        // const alturaBot = this.canoBot.getHeight() + 30
-        // if(this.passaroObj.getY() < alturaTop || this.passaroObj.getY() + 50 > gameHeight - alturaBot){ // Checagem de colisão no eixo Y (50 = altura do passaro, 30 = altura da boca)
-        //     if((gameWidth/2) + 30 >= newX && (gameWidth/2) - 30 <= newX + 120){ // Checagem de colisão no eixo X (120 = largura max do cano)
-        //         return true
-        //     }
-        // }
-        // return false
+        // Colision check
     }
 }

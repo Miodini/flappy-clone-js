@@ -5,7 +5,7 @@ const imgScaling = 3; // May be changed for different rendering sizes of the bir
 export default class Bird{
     /**
      * Setup the bird (player)
-     * @param {Number} yThrust - Ammount of vertical velocity earned with each flap
+     * @param {Number} yThrust Ammount of vertical velocity earned with each flap
     */
     constructor(yThrust){
         this.yThrust = -yThrust // Y axis is reversed on canvas
@@ -15,9 +15,9 @@ export default class Bird{
     
     /**
      * Loads the image file from source.
-     * @param {Number} canvasCenterX - x coordinate of the center of the canvas
-     * @param {Number} canvasCenterY - y coordinate of the center of the canvas
-     * @returns {Promise} - Resolves on load finish. Rejects on error.
+     * @param {Number} canvasCenterX x coordinate of the center of the canvas
+     * @param {Number} canvasCenterY y coordinate of the center of the canvas
+     * @returns {Promise} Resolves on load finish. Rejects on error.
      */
     loadImg(canvasCenterX, canvasCenterY){
         this.img.src = birdImg
@@ -26,10 +26,9 @@ export default class Bird{
             this.img.onload = () => {
                 this.width = this.img.width * imgScaling
                 this.height = this.img.height * imgScaling
-                this.pos = {
-                    x: canvasCenterX/2  - (this.width/2),
-                    y: canvasCenterY - (this.height/2)
-                }
+                this.x = canvasCenterX/2  - (this.width/2),
+                this.y = canvasCenterY - (this.height/2)
+                
                 resolve()
             }
             this.img.onerror = () => reject('Error')
@@ -45,5 +44,4 @@ export default class Bird{
         if(this.yVelocity < maxVelocity) // Remember those values are negative
             this.yVelocity = maxVelocity
     }            
-   
 }
