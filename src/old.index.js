@@ -24,9 +24,7 @@ class Game {
         
         this.pontos = new Score()
         this.passarinho = new Passarinho(this.settings.upSpeed, this.settings.downSpeed)
-        /* TODO : 
-            The amount of pipes created should depend on their speed and distance between them 
-        */
+        
         this.canos = [
             new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),
             new ParDeCanos(this.settings.yPipeDist, this.settings.xSpeed, this.pontos, this.passarinho),

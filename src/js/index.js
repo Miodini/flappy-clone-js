@@ -1,10 +1,16 @@
 import Canvas from './classes/Canvas'
 import '../assets/css/index.css'
 
-function animate(){
-    if(canvas.draw())
-        requestAnimationFrame(animate)
+let canvas = new Canvas(750)
+
+function restartGame(){
+    canvas = new Canvas(750)
+    document.getElementById('game').remove()
+    canvas.load()
 }
 
-const canvas = new Canvas(750)
-canvas.load().then(() => animate())
+window.onload = function(){
+    const restartBtn = document.getElementById('restart')
+    restartBtn.onclick = restartGame
+    canvas.load()
+}

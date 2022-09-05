@@ -7,12 +7,16 @@ export default class Canvas{
     constructor(height, gravity = -50){
         this.gravity = -gravity // Y axis is reversed on canvas
         this.element = document.createElement('canvas')
+        this.element.id = 'game'
         this.ctx = this.element.getContext('2d')
         this.ctx.imageSmoothingEnabled = false
         
         this.element.height = height
         this.element.width = height*9/16 // 16:9 proportion
         this.bird = new Bird(100)
+        /* TODO : 
+            The amount of pipes created should depend on their speed and distance between them 
+        */
         this.pipesPairs = [
             new Pipes(this.element.width, gapSize, 1.5, pWidth, height),
             new Pipes(this.element.width + pipesDist, gapSize, 1.5, pWidth, height),
@@ -20,7 +24,6 @@ export default class Canvas{
         this.pipesPairs.forEach((pair) => pair.setY(this.element.height))
         
         document.getElementById('screen').appendChild(this.element)
-        addEventListener('keydown', () => this.bird.flap()) 
     }
     
     /**
@@ -28,27 +31,29 @@ export default class Canvas{
      * @returns {Promise} - Resolves on load finish. Rejects on error.
      */
     async load(){
-        let error = false
         try{
             await this.bird.loadImg(this.element.width/2, this.element.height/2)
             this.pipesPairs.forEach(async (pair) => {
                 await pair.loadImg()
             })
+            // After loading, draws background and awaits for input
+            // Background
+            this.ctx.fillStyle = 'skyblue'
+            this.ctx.fillRect(0, 0, this.element.width, this.element.height)
+            // Text
+            this.ctx.font = '18px PublicPixel'
+            this.ctx.fillStyle = 'white'
+            this.ctx.textAlign = 'center'
+            this.ctx.fillText('Press any key to start.', this.element.width/2, this.element.height/2)
+
+            window.onkeydown = () => {
+                window.onkeydown = () => this.bird.flap()
+                this.animate()
+            }
         }
         catch(e){ 
             console.error(e)
-            error = true 
         }
-        return new Promise((resolve, reject) => {
-            if(error === false){
-                console.log('Loaded.')
-                resolve()
-            }
-            else{
-                window.alert('There was an error loading the game. Refresh and try again.')
-                reject()   
-            }
-        })
     }
 
     /**
@@ -62,6 +67,13 @@ export default class Canvas{
                     return true
         }
         return false
+    }
+
+    
+
+    animate(){
+        if(this.draw())     // Stop drawing when game over
+            requestAnimationFrame(() => this.animate())
     }
 
     draw(){
@@ -107,8 +119,12 @@ export default class Canvas{
                 pair.height
             )
         })
+        // Game over
         if(this.collisionCheck()){
-            console.log('bateu')
+            this.ctx.font = '40px PublicPixel'
+            this.ctx.fillStyle = 'white'
+            this.ctx.textAlign = 'center'
+            this.ctx.fillText('Game Over!', this.element.width/2, this.element.height/2)
             return false
         }
         return true

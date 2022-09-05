@@ -7,18 +7,18 @@
 body{
     margin: 0;
     background-color: #0D262D;
-    font-family: Verdana, sans-serif;
+    font-family: PublicPixel;
+    letter-spacing: 0.2 em;
     color: #fff;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100%;
 }
 canvas{
     border: dodgerblue 4px solid;
 }
-.game{
+main{
     display: flex;
     width: 95%;
     justify-content: space-between;
@@ -34,13 +34,7 @@ canvas{
     cursor: pointer;
 }
 /* Game */
-.screen{
-    position: relative;
-    background-color: skyblue;
-    border: 4px solid dodgerblue;
-    height: 800px;
-    width: 800px;
-}
+
 .start, .gameover{
     font-family: "PublicPixel";
     position: absolute;
@@ -54,41 +48,6 @@ canvas{
     font-size: 24pt;
 }
 
-.gameover h2{
-    white-space: nowrap;
-    font-size: 48pt;
-    margin: 10px
-}
-.gameover span{
-    font-size: 24pt;
-}
-.parCanos{
-    position: absolute;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-basis: 80px;
-    justify-content: space-between;
-}
-.cano{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.cano *{
-    background-image: linear-gradient(to right, green, greenyellow);
-    
-}
-.cano .boca{
-    width: 120px;
-    height: 30px;
-    border: solid black 1px;
-}
-.cano .corpo{
-    width: 90px;
-    border-left: solid black 1px;
-    border-right: solid black 1px;
-}
 .pontos{
     font-family: "PublicPixel";
     font-size: 48pt;
