@@ -6,6 +6,7 @@ const pWidth = 100, pipesDist = 300, gapSize = 150
 export default class Canvas{
     constructor(height, gravity = -50){
         this.gravity = -gravity // Y axis is reversed on canvas
+        this.score = 0
         this.element = document.createElement('canvas')
         this.element.id = 'game'
         this.ctx = this.element.getContext('2d')
@@ -45,6 +46,9 @@ export default class Canvas{
             this.ctx.fillStyle = 'white'
             this.ctx.textAlign = 'center'
             this.ctx.fillText('Press any key to start.', this.element.width/2, this.element.height/2)
+            // This 2 lines bellow is set for the score text which is drawn every frame after game starts
+            this.ctx.font = '32px PublicPixel'
+            this.ctx.textAlign = 'left'
 
             window.onkeydown = () => {
                 window.onkeydown = () => this.bird.flap()
@@ -69,18 +73,15 @@ export default class Canvas{
         return false
     }
 
-    
-
     animate(){
         if(this.draw())     // Stop drawing when game over
             requestAnimationFrame(() => this.animate())
     }
 
     draw(){
+        /* Frame logic update */
         const time = .06
         // Background
-        this.ctx.fillStyle = 'skyblue'
-        this.ctx.fillRect(0, 0, this.element.width, this.element.height)
         // Bird position update
         this.bird.yVelocity += this.gravity * time
         this.bird.y += (this.bird.yVelocity * time) + (this.gravity * time^2 / 2)
@@ -93,8 +94,16 @@ export default class Canvas{
             this.bird.y = 0
             this.bird.yVelocity = 0
         }
-        this.pipesPairs.forEach(pair => pair.movePipe(this.element.height, pipesDist, this.pipesPairs.length))
-        // Draws bird
+        this.pipesPairs.forEach(pair => {
+            if(pair.movePipe(this.element.height, pipesDist, this.pipesPairs.length, this.bird.x))
+                this.score++
+        })
+        /* ------------------ */
+        /* Frame drawing */
+        // Background
+        this.ctx.fillStyle = 'skyblue'
+        this.ctx.fillRect(0, 0, this.element.width, this.element.height)
+        // Bird
         this.ctx.drawImage(
             this.bird.img, 
             this.bird.x,
@@ -102,7 +111,7 @@ export default class Canvas{
             this.bird.width,
             this.bird.height
         )
-        // Draws pipes
+        // Pipes
         this.pipesPairs.forEach(pair => {
             this.ctx.drawImage(
                 pair.pipes.top.img,
@@ -119,6 +128,9 @@ export default class Canvas{
                 pair.height
             )
         })
+        // Score
+        this.ctx.fillStyle = 'white'    // Uses the same font and alignment set in the load method
+        this.ctx.fillText(`${this.score}`, 15, 40)
         // Game over
         if(this.collisionCheck()){
             this.ctx.font = '40px PublicPixel'
@@ -127,6 +139,7 @@ export default class Canvas{
             this.ctx.fillText('Game Over!', this.element.width/2, this.element.height/2)
             return false
         }
+        /* ------------- */
         return true
     }
 }

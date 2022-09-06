@@ -8,6 +8,7 @@ export default class Pipes {
         this.width = width
         this.height = height
         this.x = initialX   // x coordinate
+        this.hasScoreInc = false    // Used to define whether the game should increase the score when the pipes pass through the bird position
         this.pipes = {
             top: {
                 img: new Image(),
@@ -64,22 +65,27 @@ export default class Pipes {
     }
 
     /**
-     * Moves the pipes'xSpeed' units left
-     * @param {Number} canvasHeight - Canvas height
-     * @param {Number} canvasWidth - Canvas width
-     * @param {Number} nOfPairs - Number of pairs of pipes rendered in the canvas
+     * Moves the pipes' xSpeed units left. Returns whether the score should be increased or not
+     * @param {Number} canvasHeight Canvas height
+     * @param {Number} canvasWidth Canvas width
+     * @param {Number} nOfPairs Number of pairs of pipes rendered in the canvas
+     * @param {Number} birdX x coordinate of the center of the bird (or where the game should update the score)
+     * @returns {Boolean} true if the score should be increased, false otherwise
     */
-    movePipe(canvasHeight, pipesDist, nOfPairs){
+    movePipe(canvasHeight, pipesDist, nOfPairs, birdX){
         this.x -= this.xSpeed
         // Rollover check
         if(this.x <= 0 - this.width){
             this.x = pipesDist + nOfPairs*this.width
             this.setY(canvasHeight)
+            this.hasScoreInc = false    // Resets the score update check
         }
 
-        // // Checagem para atualização do placar
-        // if (xAtual > (gameWidth / 2) - 30 && newX <= (gameWidth / 2) - 30) //(gameWidth/2)-30 = posicao horizontal do passarinho
-        //     this.scoreObj.incScore() 
-        // Colision check
+        // Score update check
+        if (!this.hasScoreInc && (this.x + this.width)/2 <= birdX){
+            this.hasScoreInc = true
+            return true
+        }
+        return false
     }
 }
