@@ -1,0 +1,58 @@
+/* Gerais */
+@font-face {
+    font-family: PublicPixel;
+    src: url("../fonts/PublicPixel.ttf");
+}
+
+body{
+    margin: 0;
+    background-color: #0D262D;
+    font-family: PublicPixel;
+    letter-spacing: 0.2 em;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+canvas{
+    border: dodgerblue 4px solid;
+}
+main{
+    display: flex;
+    width: 95%;
+    justify-content: space-between;
+}
+/* Buttons */
+.opt-button{
+    padding: 5px;
+    width: 90px;
+    height: 90px;
+}
+#restart:hover, #settings:hover{
+    transform: scale(110%);
+    cursor: pointer;
+}
+/* Game */
+
+.start, .gameover{
+    font-family: "PublicPixel";
+    position: absolute;
+    z-index: 11;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.start{
+    font-size: 24pt;
+}
+
+.pontos{
+    font-family: "PublicPixel";
+    font-size: 48pt;
+    z-index: 10;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
