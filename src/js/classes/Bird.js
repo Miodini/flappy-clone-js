@@ -1,4 +1,4 @@
-import birdImg from '../../assets/img/bird2.png'
+import birdImg from '../../img/bird2.png'
 
 const imgScaling = 3; // May be changed for different rendering sizes of the bird
 

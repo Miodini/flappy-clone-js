@@ -1,7 +1,7 @@
 /* Gerais */
 @font-face {
     font-family: PublicPixel;
-    src: url("../fonts/PublicPixel.ttf");
+    src: url("PublicPixel.ttf");
 }
 
 body{
@@ -29,30 +29,7 @@ main{
     width: 90px;
     height: 90px;
 }
-#restart:hover, #settings:hover{
+.opt-button:hover{
     transform: scale(110%);
     cursor: pointer;
-}
-/* Game */
-
-.start, .gameover{
-    font-family: "PublicPixel";
-    position: absolute;
-    z-index: 11;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-.start{
-    font-size: 24pt;
-}
-
-.pontos{
-    font-family: "PublicPixel";
-    font-size: 48pt;
-    z-index: 10;
-    position: absolute;
-    right: 10px;
-    top: 10px;
 }

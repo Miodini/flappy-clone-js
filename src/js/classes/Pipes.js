@@ -1,5 +1,5 @@
-import pipeUpImg from '../../assets/img/pipe_up.png'
-import pipeDownImg from '../../assets/img/pipe_down.png'
+import pipeUpImg from '../../img/pipe_up.png'
+import pipeDownImg from '../../img/pipe_down.png'
 
 export default class Pipes {
     constructor(initialX, gapSize, xSpeed, width, height) {
@@ -20,7 +20,6 @@ export default class Pipes {
                 y: 0
             }
         }
- 
     }
 
     /**

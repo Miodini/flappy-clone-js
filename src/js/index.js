@@ -1,5 +1,4 @@
 import Canvas from './classes/Canvas'
-import '../assets/css/index.css'
 
 let canvas = new Canvas(750)
 
